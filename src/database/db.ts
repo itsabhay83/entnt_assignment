@@ -177,141 +177,141 @@ class SeedGenerator {
   }
 
   // Generate Assessments
-  static generateAssessments(jobs: Job[]): Assessment[] {
-    this.seed = 98765 // Different seed for assessments
+  // static generateAssessments(jobs: Job[]): Assessment[] {
+  //   this.seed = 98765 // Different seed for assessments
     
-    const assessmentTemplates = [
-      {
-        title: 'Technical Skills Assessment',
-        sections: [
-          {
-            id: 'section-1',
-            title: 'Programming Knowledge',
-            description: 'Test your programming fundamentals',
-            order: 1,
-            timeLimit: 30,
-            questions: [
-              {
-                id: 'q1',
-                type: 'multiple-choice' as const,
-                title: 'What is the time complexity of binary search?',
-                required: true,
-                order: 1,
-                config: {
-                  options: [
-                    { id: 'opt1', text: 'O(n)', isCorrect: false },
-                    { id: 'opt2', text: 'O(log n)', isCorrect: true },
-                    { id: 'opt3', text: 'O(n²)', isCorrect: false },
-                    { id: 'opt4', text: 'O(1)', isCorrect: false }
-                  ]
-                },
-                points: 10
-              },
-              {
-                id: 'q2',
-                type: 'code' as const,
-                title: 'Implement a function to reverse a string',
-                description: 'Write a function that takes a string and returns its reverse',
-                required: true,
-                order: 2,
-                config: {
-                  language: 'javascript',
-                  startingCode: '// Write your function here\nfunction reverseString(str) {\n  // Your code here\n}',
-                  placeholder: 'Write your solution here...'
-                },
-                points: 20
-              }
-            ]
-          },
-          {
-            id: 'section-2',
-            title: 'Problem Solving',
-            description: 'Analytical thinking questions',
-            order: 2,
-            questions: [
-              {
-                id: 'q3',
-                type: 'text' as const,
-                title: 'Describe your approach to debugging a complex issue',
-                required: true,
-                order: 1,
-                config: {
-                  minLength: 100,
-                  maxLength: 500,
-                  placeholder: 'Describe your debugging process step by step...'
-                },
-                points: 15
-              }
-            ]
-          }
-        ]
-      },
-      {
-        title: 'Behavioral Assessment',
-        sections: [
-          {
-            id: 'section-3',
-            title: 'Communication Skills',
-            order: 1,
-            questions: [
-              {
-                id: 'q4',
-                type: 'rating' as const,
-                title: 'Rate your communication skills',
-                required: true,
-                order: 1,
-                config: {
-                  scale: 5,
-                  labels: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent']
-                },
-                points: 10
-              }
-            ]
-          }
-        ]
-      },
-      {
-        title: 'Portfolio Review',
-        sections: [
-          {
-            id: 'section-4',
-            title: 'Work Samples',
-            order: 1,
-            questions: [
-              {
-                id: 'q5',
-                type: 'file-upload' as const,
-                title: 'Upload your best project',
-                description: 'Share a project that showcases your skills',
-                required: true,
-                order: 1,
-                config: {
-                  allowedTypes: ['.pdf', '.zip', '.jpg', '.png'],
-                  maxSize: 10485760 // 10MB
-                },
-                points: 25
-              }
-            ]
-          }
-        ]
-      }
-    ]
+  //   const assessmentTemplates = [
+  //     {
+  //       title: 'Technical Skills Assessment',
+  //       sections: [
+  //         {
+  //           id: 'section-1',
+  //           title: 'Programming Knowledge',
+  //           description: 'Test your programming fundamentals',
+  //           order: 1,
+  //           timeLimit: 30,
+  //           questions: [
+  //             {
+  //               id: 'q1',
+  //               type: 'multiple-choice' as const,
+  //               title: 'What is the time complexity of binary search?',
+  //               required: true,
+  //               order: 1,
+  //               config: {
+  //                 options: [
+  //                   { id: 'opt1', text: 'O(n)', isCorrect: false },
+  //                   { id: 'opt2', text: 'O(log n)', isCorrect: true },
+  //                   { id: 'opt3', text: 'O(n²)', isCorrect: false },
+  //                   { id: 'opt4', text: 'O(1)', isCorrect: false }
+  //                 ]
+  //               },
+  //               points: 10
+  //             },
+  //             {
+  //               id: 'q2',
+  //               type: 'code' as const,
+  //               title: 'Implement a function to reverse a string',
+  //               description: 'Write a function that takes a string and returns its reverse',
+  //               required: true,
+  //               order: 2,
+  //               config: {
+  //                 language: 'javascript',
+  //                 startingCode: '// Write your function here\nfunction reverseString(str) {\n  // Your code here\n}',
+  //                 placeholder: 'Write your solution here...'
+  //               },
+  //               points: 20
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           id: 'section-2',
+  //           title: 'Problem Solving',
+  //           description: 'Analytical thinking questions',
+  //           order: 2,
+  //           questions: [
+  //             {
+  //               id: 'q3',
+  //               type: 'text' as const,
+  //               title: 'Describe your approach to debugging a complex issue',
+  //               required: true,
+  //               order: 1,
+  //               config: {
+  //                 minLength: 100,
+  //                 maxLength: 500,
+  //                 placeholder: 'Describe your debugging process step by step...'
+  //               },
+  //               points: 15
+  //             }
+  //           ]
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       title: 'Behavioral Assessment',
+  //       sections: [
+  //         {
+  //           id: 'section-3',
+  //           title: 'Communication Skills',
+  //           order: 1,
+  //           questions: [
+  //             {
+  //               id: 'q4',
+  //               type: 'rating' as const,
+  //               title: 'Rate your communication skills',
+  //               required: true,
+  //               order: 1,
+  //               config: {
+  //                 scale: 5,
+  //                 labels: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent']
+  //               },
+  //               points: 10
+  //             }
+  //           ]
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       title: 'Portfolio Review',
+  //       sections: [
+  //         {
+  //           id: 'section-4',
+  //           title: 'Work Samples',
+  //           order: 1,
+  //           questions: [
+  //             {
+  //               id: 'q5',
+  //               type: 'file-upload' as const,
+  //               title: 'Upload your best project',
+  //               description: 'Share a project that showcases your skills',
+  //               required: true,
+  //               order: 1,
+  //               config: {
+  //                 allowedTypes: ['.pdf', '.zip', '.jpg', '.png'],
+  //                 maxSize: 10485760 // 10MB
+  //               },
+  //               points: 25
+  //             }
+  //           ]
+  //         }
+  //       ]
+  //     }
+  //   ]
 
-    return assessmentTemplates.map((template, i) => ({
-      id: `assessment-${i + 1}`,
-      jobId: jobs[i % jobs.length].id,
-      title: template.title,
-      description: `Comprehensive ${template.title.toLowerCase()} for candidates`,
-      sections: template.sections,
-      timeLimit: 90,
-      passingScore: 70,
-      instructions: 'Please read all questions carefully and provide thoughtful answers. You have 90 minutes to complete this assessment.',
-      isActive: true,
-      createdBy: 'user-1',
-      createdAt: this.randomDate(new Date('2024-01-01'), new Date()),
-      updatedAt: this.randomDate(new Date('2024-01-01'), new Date())
-    }))
-  }
+  //   return assessmentTemplates.map((template, i) => ({
+  //     id: `assessment-${i + 1}`,
+  //     jobId: jobs[i % jobs.length].id,
+  //     title: template.title,
+  //     description: `Comprehensive ${template.title.toLowerCase()} for candidates`,
+  //     sections: template.sections,
+  //     timeLimit: 90,
+  //     passingScore: 70,
+  //     instructions: 'Please read all questions carefully and provide thoughtful answers. You have 90 minutes to complete this assessment.',
+  //     isActive: true,
+  //     createdBy: 'user-1',
+  //     createdAt: this.randomDate(new Date('2024-01-01'), new Date()),
+  //     updatedAt: this.randomDate(new Date('2024-01-01'), new Date())
+  //   }))
+  // }
 
   // Generate Timeline Entries
   static generateTimelines(candidates: Candidate[]): TimelineEntry[] {
@@ -378,20 +378,17 @@ export class DatabaseService {
       // Generate seed data
       const jobs = SeedGenerator.generateJobs(25)
       const candidates = SeedGenerator.generateCandidates(1000, jobs)
-      const assessments = SeedGenerator.generateAssessments(jobs.slice(0, 3)) // 3 assessments
+      // const assessments = SeedGenerator.generateAssessments(jobs.slice(0, 3)) // 3 assessments
       const timelines = SeedGenerator.generateTimelines(candidates)
 
       // Insert data
       await db.transaction('rw', [db.jobs, db.candidates, db.assessments, db.timelines], async () => {
         await db.jobs.bulkAdd(jobs)
         await db.candidates.bulkAdd(candidates)
-        await db.assessments.bulkAdd(assessments)
         await db.timelines.bulkAdd(timelines)
       })
 
       console.log('✅ Database seeded successfully!')
-      console.log(`📊 Added: ${jobs.length} jobs, ${candidates.length} candidates, ${assessments.length} assessments, ${timelines.length} timeline entries`)
-      
     } catch (error) {
       console.error('❌ Error seeding database:', error)
       throw error
