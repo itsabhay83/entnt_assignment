@@ -17,6 +17,9 @@ enableMocking().then(() => {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
+    {/* <div className="bg-blue-500 text-white p-4 rounded">
+  Tailwind Test</div> */}
+
   </StrictMode>,
   )
 })
