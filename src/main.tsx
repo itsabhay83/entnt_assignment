@@ -1,25 +1,22 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+import  seedData  from './database/db'
 import './index.css'
-import App from './App.tsx'
-
-async function enableMocking() {
-  if (process.env.NODE_ENV !== 'development') {
-    return
+async function enableMocks() {
+  if (import.meta.env.DEV) {
+    const { worker } = await import('./mocks/browser')
+    worker.start({ onUnhandledRequest: 'bypass' })
+  } else {
+    // Production: ensure DB is seeded
+    await seedData
   }
-
-  const { worker } = await import('./mocks/browser')
-  return worker.start({
-    onUnhandledRequest: 'warn',
-  })
 }
-enableMocking().then(() => {
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-    {/* <div className="bg-blue-500 text-white p-4 rounded">
-  Tailwind Test</div> */}
 
-  </StrictMode>,
+enableMocks().then(() => {
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
   )
 })
