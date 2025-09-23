@@ -13,28 +13,10 @@ import type {
   CreateJobFormData,
   CreateCandidateFormData
 } from '../types'
+import { adaptiveApi } from '../utils/api-adapter'
 
 // Base API function
-const api = async <T>(
-  endpoint: string, 
-  options?: RequestInit
-): Promise<ApiResponse<T>> => {
-  const response = await fetch(`/api${endpoint}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-    ...options,
-  })
-
-  const data = await response.json()
-  
-  if (!response.ok) {
-    throw new Error(data.error || 'An error occurred')
-  }
-  
-  return data
-}
+const api = adaptiveApi
 
 // ===== JOBS HOOKS =====
 

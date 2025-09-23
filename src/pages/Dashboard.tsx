@@ -181,7 +181,6 @@ export const Dashboard = () => {
               Create New Job Posting
             </button>
             
-            
           </div>
           <CreateJobModal isOpen={open} onClose={() => setopen(false)} />
         </div>

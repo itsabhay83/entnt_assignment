@@ -12,6 +12,8 @@ import type {
 } from '../types'
 
 // Database Schema
+// In your database/db.ts file, update the schema version and add the missing index
+
 export class HRDatabase extends Dexie {
   jobs!: Table<Job>
   candidates!: Table<Candidate>
@@ -24,7 +26,16 @@ export class HRDatabase extends Dexie {
 
   constructor() {
     super('HRPortalDB')
-    
+    this.version(2).stores({
+      jobs: 'id, title, status, department, type, experienceLevel, postedDate, createdBy, order',
+      candidates: 'id, name, email, jobId, stage, appliedAt, score',
+      assessments: 'id, jobId, title, isActive, createdBy, createdAt',
+      timelines: 'id, candidateId, type, date, performedBy',
+      responses: 'id, assessmentId, candidateId, questionId, sectionId, submittedAt',
+      assessmentResults: 'id, assessmentId, candidateId, percentage, passed, submittedAt',
+      users: 'id, email, role, isActive',
+      notifications: 'id, userId, type, isRead, createdAt'
+    })
     this.version(1).stores({
       jobs: 'id, title, status, department, type, experienceLevel, postedDate, createdBy',
       candidates: 'id, name, email, jobId, stage, appliedAt, score',
@@ -87,7 +98,7 @@ class SeedGenerator {
     const statuses = ['active', 'archived', 'draft', 'closed'] as const
 
     return Array.from({ length: count }, (_, i) => ({
-      id: `job-${i + 1}`,
+      id: `job-${String(i + 1).padStart(3, '0')}`,
       title: this.randomChoice(jobTitles),
       slug: `job-${i + 1}-${jobTitles[i % jobTitles.length].toLowerCase().replace(/\s+/g, '-')}`,
       status: i < count * 0.7 ? 'active' : this.randomChoice([...statuses]), // 70% active
@@ -143,10 +154,13 @@ class SeedGenerator {
       const firstName = this.randomChoice(firstNames)
       const lastName = this.randomChoice(lastNames)
       const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@email.com`
-      const assignedJob = this.randomChoice(jobs)
-
+      const assignedJob = this.randomChoice(jobs.filter(job => job && job.id))
+    
+      if (!assignedJob) {
+        throw new Error(`No valid job found for candidate ${i}`)
+      }
       return {
-        id: `candidate-${i + 1}`,
+        id: `candidate-${String(i + 1).padStart(4, '0')}`,
         name: `${firstName} ${lastName}`,
         email,
         phone: `+1 (${this.randomInt(200, 999)}) ${this.randomInt(200, 999)}-${this.randomInt(1000, 9999)}`,
@@ -333,13 +347,16 @@ class SeedGenerator {
 
     candidates.forEach((candidate, candidateIndex) => {
       const numEvents = this.randomInt(2, 6)
-      
+      if (!candidate || !candidate.id) {
+       console.warn(`Invalid candidate at index ${candidateIndex}`)
+       return
+      }
       for (let i = 0; i < numEvents; i++) {
         const event = this.randomChoice(events)
         const eventDate = this.randomDate(new Date(candidate.appliedAt), new Date())
         
         timelines.push({
-          id: `timeline-${candidateIndex}-${i}`,
+          id: `timeline-${String(candidateIndex).padStart(4, '0')}-${String(i).padStart(2, '0')}`,
           candidateId: candidate.id,
           type: event.type,
           title: event.title,
@@ -377,15 +394,26 @@ export class DatabaseService {
 
       // Generate seed data
       const jobs = SeedGenerator.generateJobs(25)
-      const candidates = SeedGenerator.generateCandidates(1000, jobs)
-      // const assessments = SeedGenerator.generateAssessments(jobs.slice(0, 3)) // 3 assessments
-      const timelines = SeedGenerator.generateTimelines(candidates)
+      const validJobs = jobs.filter(job => job && job.id && typeof job.id === 'string')
+      if (validJobs.length === 0) {
+        throw new Error('No valid jobs generated')
+      }
+      const candidates = SeedGenerator.generateCandidates(1000, validJobs)
+      const validCandidates = candidates.filter(candidate => 
+        candidate && 
+        candidate.id && 
+        typeof candidate.id === 'string' && 
+        candidate.jobId && 
+        validJobs.some(job => job.id === candidate.jobId)
+      )
+      const timelines = SeedGenerator.generateTimelines(validCandidates)
+      
 
       // Insert data
       await db.transaction('rw', [db.jobs, db.candidates, db.assessments, db.timelines], async () => {
-        await db.jobs.bulkAdd(jobs)
-        await db.candidates.bulkAdd(candidates)
-        await db.timelines.bulkAdd(timelines)
+        if (validJobs.length > 0) await db.jobs.bulkAdd(validJobs)
+        if (validCandidates.length > 0) await db.candidates.bulkAdd(validCandidates)
+        if (timelines.length > 0) await db.timelines.bulkAdd(timelines)
       })
 
       console.log('✅ Database seeded successfully!')
@@ -475,9 +503,12 @@ export class DatabaseService {
     }
   }
 }
-
 if (typeof window !== 'undefined') {
-  DatabaseService.initializeDatabase().catch(console.error)
+  DatabaseService.initializeDatabase()
+    .then(() => console.log('Database initialized successfully'))
+    .catch(error => {
+      console.error('Failed to initialize database:', error)
+    })
 }
 
 
