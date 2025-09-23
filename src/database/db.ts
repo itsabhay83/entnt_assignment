@@ -476,7 +476,9 @@ export class DatabaseService {
   }
 }
 
-// Initialize database on app start
-DatabaseService.initializeDatabase().catch(console.error)
+if (typeof window !== 'undefined') {
+  DatabaseService.initializeDatabase().catch(console.error)
+}
+
 
 export default db

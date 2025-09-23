@@ -1,17 +1,25 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import  seedData  from './database/db'
 import './index.css'
+// Conditionally enable MSW in development mode
+
 async function enableMocks() {
   if (import.meta.env.DEV) {
     const { worker } = await import('./mocks/browser')
-    worker.start({ onUnhandledRequest: 'bypass' })
-  } else {
-    // Production: ensure DB is seeded
-    await seedData
+    await worker.start({ onUnhandledRequest: 'bypass' })
+  }
+  if (typeof window !== 'undefined') {
+    const dbModule = await import('./database/db')
+    if (dbModule.DatabaseService?.initializeDatabase) {
+      await dbModule.DatabaseService.initializeDatabase()
+    } else if (dbModule.default) {
+
+      console.log('DB default imported:', dbModule.default)
+    }
   }
 }
+
 
 enableMocks().then(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
