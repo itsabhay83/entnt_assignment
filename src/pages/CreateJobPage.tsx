@@ -1,4 +1,4 @@
-// src/pages/CreateJobPage.tsx
+
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { useCreateJob } from '../hooks/api'
@@ -21,7 +21,6 @@ export default function CreateJobPage() {
 
   async function onSubmit(values: FormValues) {
     const now = new Date().toISOString()
-    // adjust payload to match server; remove id if server generates it
     const payload: Partial<Job> = {
       title: values.title,
       slug: values.title.toLowerCase().replace(/\s+/g, '-'),
@@ -42,11 +41,9 @@ export default function CreateJobPage() {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const res = await create.mutateAsync(payload as any) 
-      // if API returns created job in res.data
       const createdId = res?.data?.id ?? payload.id
       navigate(`/jobs/${createdId}`)
     } catch (err) {
-      // your hook already toasts onError; optionally handle here
       console.error('Create job failed', err)
     }
   }
